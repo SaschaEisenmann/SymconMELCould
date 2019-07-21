@@ -49,7 +49,7 @@ class MELCloudDevice extends IPSModule
     {
         switch ($Ident) {
             case "SET_TEMPERATURE":
-                    $this->$this->UpdateSetTemperature($Value);
+                    $this->UpdateSetTemperature($Value);
                 break;
         }
     }
