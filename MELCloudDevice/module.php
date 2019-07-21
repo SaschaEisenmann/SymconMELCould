@@ -29,7 +29,7 @@ class MELCloudDevice extends IPSModule
         $this->SetTimerInterval('Update', $this->ReadPropertyInteger('UpdateInterval') * 1000);
 
         $this->RegisterVariableBoolean('POWER', 'Power', '~Switch', 1);
-        $this->RegisterVariableInteger('MODE', 'Mode', 2);
+        $this->RegisterVariableInteger('MODE', 'Mode', "", 2);
         $this->RegisterVariableFloat('ROOM_TEMPERATURE', 'RoomTemperature', '~Temperature', 2);
         $this->RegisterVariableFloat('SET_TEMPERATURE', 'SetTemperature', '~Temperature', 2);
     }
