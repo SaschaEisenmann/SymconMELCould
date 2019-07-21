@@ -36,7 +36,11 @@ class MELCloudControl extends IPSModule
             return false;
         }
 
+        $tz = date_default_timezone_get();
+        date_default_timezone_set('UTC');
         $tokenExpiry = strtotime($tokenExpiryString);
+        date_default_timezone_set($tz);
+
         if($tokenExpiry == false) {
             IPS_LogMessage("SymconMELCloud", "Token expiry is not a valid date");
             return false;
