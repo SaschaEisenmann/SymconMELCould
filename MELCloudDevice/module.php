@@ -30,8 +30,25 @@ class MELCloudDevice extends IPSModule
 
         $this->RegisterVariableBoolean('POWER', 'Power', '~Switch', 1);
         $this->RegisterVariableInteger('MODE', 'Mode', "", 2);
-        $this->RegisterVariableFloat('ROOM_TEMPERATURE', 'RoomTemperature', '~Temperature', 2);
-        $this->RegisterVariableFloat('SET_TEMPERATURE', 'SetTemperature', '~Temperature', 2);
+        // 0 -> Off
+        // 1 -> SWW
+        // 2 -> Heating
+        // 3 -> Cooling
+        // 4 -> Defrost
+        // 5 -> Standby
+        // 6 -> Legionella
+
+
+        $this->RegisterVariableFloat('ROOM_TEMPERATURE', 'RoomTemperature', '~Temperature', 3);
+
+        $this->RegisterVariableFloat('SET_TEMPERATURE', 'SetTemperature', '~Temperature', 4);
+        $this->EnableAction("SET_TEMPERATURE");
+    }
+
+    public function RequestAction($Ident, $Value)
+    {
+        IPS_LogMessage("SymconMELCloud", "RequestAction $Ident - $Value");
+        return parent::RequestAction($Ident, $Value);
     }
 
     public function Update() {
