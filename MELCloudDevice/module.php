@@ -16,13 +16,20 @@ class MELCloudDevice extends IPSModule
 
         $this->RegisterPropertyString('Token', '');
         $this->RegisterPropertyString('TokenExpiry', '');
+
+        $this->RegisterPropertyInteger('UpdateInterval', 120);
+
+        $this->RegisterTimer('Update', 0, 'BVC_Update($_IPS[\'TARGET\'], 0);');
     }
 
     public function ApplyChanges()
     {
         parent::ApplyChanges();
 
+        $this->SetTimerInterval('Update', $this->ReadPropertyInteger('UpdateInterval') * 1000);
+
         $this->RegisterVariableBoolean('POWER', 'Power', '~Switch', 1);
+        $this->RegisterVariableInteger('MODE', 'Mode', 2);
         $this->RegisterVariableFloat('ROOM_TEMPERATURE', 'RoomTemperature', '~Temperature', 2);
         $this->RegisterVariableFloat('SET_TEMPERATURE', 'SetTemperature', '~Temperature', 2);
     }
@@ -31,11 +38,17 @@ class MELCloudDevice extends IPSModule
         $status = $this->RequestStatus();
 
         $power = $status['Power'];
-        IPS_LogMessage("SymconMELCloud", "Power '$power'");
 
-        SetValueBoolean($this->GetIDForIdent("POWER"), $status['Power']);
+        SetValueBoolean($this->GetIDForIdent("POWER"), $power);
+
+        SetValueInteger($this->GetIDForIdent("MODE"), $status["OperationMode"]);
+        IPS_SetHidden($this->GetIDForIdent('MODE'), $power);
+
         SetValueFloat($this->GetIDForIdent("ROOM_TEMPERATURE"), $status['RoomTemperature']);
+        IPS_SetHidden($this->GetIDForIdent('ROOM_TEMPERATURE'), $power);
+
         SetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"), $status['SetTemperature']);
+        IPS_SetHidden($this->GetIDForIdent('SET_TEMPERATURE'), $power);
     }
 
     private function RequestStatus() {
