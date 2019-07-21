@@ -68,6 +68,7 @@ class MELCloudControl extends IPSModule
 
         if (isset($result["LoginData"]) && isset($result["LoginData"]["ContextKey"])) {
             IPS_SetProperty($this->InstanceID, 'Token', $result["LoginData"]["ContextKey"]);
+            IPS_SetProperty($this->InstanceID, 'TokenExpiry', $result["LoginData"]["Expiry"]);
             IPS_ApplyChanges($this->InstanceID);
         }
 
