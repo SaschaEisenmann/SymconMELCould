@@ -21,10 +21,18 @@ class MELCloudDevice extends IPSModule
     public function ApplyChanges()
     {
         parent::ApplyChanges();
+
+        $this->RegisterVariableBoolean('POWER', 'Power', '~Switch', 1);
+        $this->RegisterVariableFloat('ROOM_TEMPERATURE', 'RoomTemperature', '~Temperature', 2);
+        $this->RegisterVariableFloat('SET_TEMPERATURE', 'SetTemperature', '~Temperature', 2);
     }
 
     public function Update() {
         $status = $this->RequestStatus();
+
+        SetValueInteger($this->GetIDForIdent("POWER"), $status['Power']);
+        SetValueInteger($this->GetIDForIdent("ROOM_TEMPERATURE"), $status['RoomTemperature']);
+        SetValueInteger($this->GetIDForIdent("SET_TEMPERATURE"), $status['SetTemperature']);
     }
 
     private function RequestStatus() {
