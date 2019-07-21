@@ -41,7 +41,7 @@ class MELCloudDevice extends IPSModule
         $headers[] = "Accept: application/json";
 
         IPS_LogMessage("SymconMELCloud", "Requesting status from '$url'");
-        $result = $this->Request($url, 'POST', $params, $headers);
+        $result = $this->Request($url, 'POST', array(), $headers);
     }
 
     private function HasValidToken() {
