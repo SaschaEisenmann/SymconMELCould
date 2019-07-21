@@ -1,0 +1,11 @@
+{
+  "id": "{1D2A6DC8-18ED-4206-831B-A87252E50F4C}",
+  "name": "MelCloudDevice",
+  "type": 3,
+  "vendor": "Sascha Eisenmann",
+  "aliases": ["MEL Cloud Device"],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "MCD"
+}

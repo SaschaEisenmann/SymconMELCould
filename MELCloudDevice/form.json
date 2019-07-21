@@ -1,0 +1,19 @@
+{
+  "elements": [
+    {
+      "name": "DeviceId",
+      "type": "ValidationTextBox",
+      "caption": "DeviceId"
+    },
+    {
+      "name": "DeviceName",
+      "type": "ValidationTextBox",
+      "caption": "DeviceName"
+    },
+    {
+      "name": "SerialNumber",
+      "type": "ValidationTextBox",
+      "caption": "SerialNumber"
+    }
+  ]
+}

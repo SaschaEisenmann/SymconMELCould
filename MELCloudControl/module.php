@@ -9,6 +9,7 @@ class MELCloudControl extends IPSModule
 
         $this->RegisterPropertyString('Token', '');
         $this->RegisterPropertyString('TokenExpiry', '');
+        $this->RegisterPropertyInteger('Category', 0);
     }
 
     public function ApplyChanges()
@@ -21,6 +22,74 @@ class MELCloudControl extends IPSModule
         if (!$this->HasValidToken()) {
             $this->CreateToken();
         }
+
+        $devices = $this->ListDevices();
+        if (isset($devices)) {
+            foreach ($devices as $device) {
+                $this->CreateOrUpdateDevice($device);
+            }
+        }
+
+    }
+
+    private function ListDevices() {
+        $url = "https://app.melcloud.com/Mitsubishi.Wifi.Client/User/ListDevices/";
+
+        $headers = array();
+        $headers["Accept"] = "application/json";
+        $headers["X-MitsContextKey"] = $this->ReadPropertyString('Token');
+
+        $locations = $this->Request($url, 'GET', array(), $headers);
+
+        $devices = array();
+        foreach ($locations as $location) {
+            foreach ($location["Structure"]["Devices"] as $device) {
+                array_push($devices, $device);
+            }
+        }
+
+        return $devices;
+    }
+
+    private function CreateOrUpdateDevice($device) {
+        $deviceID = $device['DeviceID'];
+        $deviceName = $device['DeviceName'];
+        $serialNumber = $device['SerialNumber'];
+
+        $category = $this->ReadPropertyInteger('Category');
+
+        $instanceId = $this->FindBySerial($serialNumber);
+
+        if($category && !$instanceId) {
+            IPS_LogMessage("SymconMELCloud", "Creating device for serial number '$serialNumber'");
+            $instanceId = IPS_CreateInstance('{1D2A6DC8-18ED-4206-831B-A87252E50F4C}');
+            IPS_SetParent($instanceId, $category);
+            IPS_SetProperty($instanceId, 'SerialNumber', $serialNumber);
+        }
+
+        if($instanceId) {
+            IPS_LogMessage("SymconMELCloud", "Updating device with serial number '$serialNumber'");
+
+            IPS_SetName($instanceId, $deviceName);
+
+            IPS_SetProperty($instanceId, 'DeviceID', $deviceID);
+            IPS_SetProperty($instanceId, 'DeviceName', $deviceName);
+
+            IPS_ApplyChanges($instanceId);
+        }
+    }
+
+    private function FindBySerial($serialNumber)
+    {
+        $ids = IPS_GetInstanceListByModuleID('{1D2A6DC8-18ED-4206-831B-A87252E50F4C}');
+        $found = false;
+        foreach ($ids as $id) {
+            if (strtolower(IPS_GetProperty($id, 'SerialNumber')) == strtolower($serialNumber)) {
+                $found = $id;
+                break;
+            }
+        }
+        return $found;
     }
 
     private function HasValidToken() {

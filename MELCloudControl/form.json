@@ -9,6 +9,11 @@
       "name": "Password",
       "type": "ValidationTextBox",
       "caption": "Passwort"
+    },
+    {
+      "name": "Category",
+      "type": "SelectCategory",
+      "caption": "Kategorie für Geräte"
     }
   ],
   "actions": [
