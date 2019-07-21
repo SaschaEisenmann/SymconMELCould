@@ -42,8 +42,9 @@ class MELCloudControl extends IPSModule
             return false;
         }
 
-        IPS_LogMessage("SymconMELCloud", "Token: $tokenExpiry");
-        if($tokenExpiry <= strtotime('-1 hour')) {
+        $currentTime = strtotime('-1 hour');
+        IPS_LogMessage("SymconMELCloud", "Token: $tokenExpiry, Current: $currentTime");
+        if($tokenExpiry <= $currentTime) {
             IPS_LogMessage("SymconMELCloud", "Token is expired or will in the next hour");
             return false;
         }
