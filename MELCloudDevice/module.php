@@ -67,14 +67,14 @@ class MELCloudDevice extends IPSModule
         $headers[] = "X-MitsContextKey: $token";
 
         $params = array();
-        $params['Power'] = $temperature;
+        $params['SetTemperature'] = $temperature;
         $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
         $params['EffectiveFlags'] = "1";
         $params['HasPendingCommand'] = "true";
 
         $response = $this->Request($url, "POST", $params, $headers);
 
-        if($response["Success"]) {
+        if(isset($response["HasPendingCommand"])) {
             SetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"), $temperature);
         }
     }
