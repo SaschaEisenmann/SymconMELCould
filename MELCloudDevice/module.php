@@ -78,7 +78,6 @@ class MELCloudDevice extends IPSModule
         } else {
             $params['Power'] = "false";
         }
-        $params['SetTemperature'] = GetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"));
         $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
         $params['EffectiveFlags'] = "1";
         $params['HasPendingCommand'] = "true";
@@ -103,14 +102,9 @@ class MELCloudDevice extends IPSModule
         $headers[] = "X-MitsContextKey: $token";
 
         $params = array();
-        if(GetValueBoolean($this->GetIDForIdent("POWER"))) {
-            $params['Power'] = "true";
-        } else {
-            $params['Power'] = "false";
-        }
         $params['SetTemperature'] = $temperature;
         $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
-        $params['EffectiveFlags'] = "1";
+        $params['EffectiveFlags'] = "4";
         $params['HasPendingCommand'] = "true";
 
         $response = $this->Request($url, "POST", $params, $headers);
