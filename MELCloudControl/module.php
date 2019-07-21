@@ -184,6 +184,7 @@ class MELCloudControl extends IPSModule
             return false;
         } elseif ($status != '200' && $status != '201') {
             IPS_LogMessage("SymconMELCloud", "Response invalid. Code $status");
+            IPS_LogMessage("SymconMELCloud", "Response: '$result'");
             $this->SetStatus(201);
             return false;
         } else {
