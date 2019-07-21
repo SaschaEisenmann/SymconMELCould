@@ -65,7 +65,6 @@ class MELCloudControl extends IPSModule
 
         IPS_LogMessage("SymconMELCloud", "Requesting a new token from '$url'");
         $result = $this->Request($url, 'POST', $params, $headers);
-        IPS_LogMessage("SymconMELCloud", "Response: '$result'");
 
         if (isset($result["LoginData"]) && isset($result["LoginData"]["ContextKey"])) {
             IPS_SetProperty($this->InstanceID, 'Token', $result["LoginData"]["ContextKey"]);
@@ -113,6 +112,7 @@ class MELCloudControl extends IPSModule
             $this->SetStatus(201);
             return false;
         } else {
+            IPS_LogMessage("SymconMELCloud", "Response: '$result'");
             return json_decode($result, true);
         }
     }
