@@ -33,9 +33,9 @@ class MELCloudDevice extends IPSModule
         $power = $status['Power'];
         IPS_LogMessage("SymconMELCloud", "Power '$power'");
 
-        SetValueInteger($this->GetIDForIdent("POWER"), $status['Power']);
-        SetValueInteger($this->GetIDForIdent("ROOM_TEMPERATURE"), $status['RoomTemperature']);
-        SetValueInteger($this->GetIDForIdent("SET_TEMPERATURE"), $status['SetTemperature']);
+        SetValueBoolean($this->GetIDForIdent("POWER"), $status['Power']);
+        SetValueInteger($this->GetIDForIdent("ROOM_TEMPERATURE"), round($status['RoomTemperature'], 0));
+        SetValueInteger($this->GetIDForIdent("SET_TEMPERATURE"), round($status['SetTemperature'], 0));
     }
 
     private function RequestStatus() {
