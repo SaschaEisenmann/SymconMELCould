@@ -59,13 +59,13 @@ class MELCloudDevice extends IPSModule
         SetValueBoolean($this->GetIDForIdent("POWER"), $power);
 
         SetValueInteger($this->GetIDForIdent("MODE"), $status["OperationMode"]);
-        IPS_SetHidden($this->GetIDForIdent('MODE'), $power);
+        IPS_SetHidden($this->GetIDForIdent('MODE'), !$power);
 
         SetValueFloat($this->GetIDForIdent("ROOM_TEMPERATURE"), $status['RoomTemperature']);
-        IPS_SetHidden($this->GetIDForIdent('ROOM_TEMPERATURE'), $power);
+        IPS_SetHidden($this->GetIDForIdent('ROOM_TEMPERATURE'), !$power);
 
         SetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"), $status['SetTemperature']);
-        IPS_SetHidden($this->GetIDForIdent('SET_TEMPERATURE'), $power);
+        IPS_SetHidden($this->GetIDForIdent('SET_TEMPERATURE'), !$power);
     }
 
     private function RequestStatus() {
