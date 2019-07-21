@@ -95,7 +95,8 @@ class MELCloudControl extends IPSModule
     }
 
     private function HasValidToken() {
-        if ($this->ReadPropertyString('Token') == '') {
+        $token = $this->ReadPropertyString('Token');
+        if ($token == '') {
             IPS_LogMessage("SymconMELCloud", "No token present");
             return false;
         }
@@ -119,6 +120,18 @@ class MELCloudControl extends IPSModule
 
         if($tokenExpiry <= strtotime('-1 hour')) {
             IPS_LogMessage("SymconMELCloud", "Token is expired or will in the next hour");
+            return false;
+        }
+
+        $url = "https://app.melcloud.com/Mitsubishi.Wifi.Client/User/ListDevices/";
+
+        $headers = array();
+        $headers[] = "Accept: application/json";
+        $headers[] = "X-MitsContextKey: $token";
+
+        $result = $this->Request($url, 'GET', array(), $headers);
+        if($result == false) {
+            IPS_LogMessage("SymconMELCloud", "Test call returned an error");
             return false;
         }
 
