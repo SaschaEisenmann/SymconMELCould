@@ -50,6 +50,8 @@ class MELCloudDevice extends IPSModule
 
         IPS_LogMessage("SymconMELCloud", "Requesting status from '$url'");
         $result = $this->Request($url, 'POST', array(), $headers);
+
+        return $result;
     }
 
     private function HasValidToken() {
