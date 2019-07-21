@@ -19,7 +19,7 @@ class MELCloudDevice extends IPSModule
 
         $this->RegisterPropertyInteger('UpdateInterval', 120);
 
-        $this->RegisterTimer('Update', 0, 'BVC_Update($_IPS[\'TARGET\'], 0);');
+        $this->RegisterTimer('Update', 0, 'MCD_Update($_IPS[\'TARGET\'], 0);');
     }
 
     public function ApplyChanges()
@@ -47,8 +47,36 @@ class MELCloudDevice extends IPSModule
 
     public function RequestAction($Ident, $Value)
     {
-        IPS_LogMessage("SymconMELCloud", "RequestAction $Ident - $Value");
-        return parent::RequestAction($Ident, $Value);
+        switch ($Ident) {
+            case "SET_TEMPERATURE":
+                    $this->$this->UpdateSetTemperature($Value);
+                break;
+        }
+    }
+
+    public function UpdateSetTemperature($temperature) {
+        if (!$this->HasValidToken()) {
+            $this->CreateToken();
+        }
+
+        $token = $this->ReadPropertyString('Token');
+        $url = "https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta";
+
+        $headers = array();
+        $headers[] = "Accept: application/json";
+        $headers[] = "X-MitsContextKey: $token";
+
+        $params = array();
+        $params['Power'] = $temperature;
+        $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
+        $params['EffectiveFlags'] = "1";
+        $params['HasPendingCommand'] = "true";
+
+        $response = $this->Request($url, "POST", $params, $headers);
+
+        if($response["Success"]) {
+            SetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"), $temperature);
+        }
     }
 
     public function Update() {
