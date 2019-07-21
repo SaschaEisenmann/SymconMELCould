@@ -103,7 +103,11 @@ class MELCloudDevice extends IPSModule
         $headers[] = "X-MitsContextKey: $token";
 
         $params = array();
-        $params['Power'] = GetValueBoolean($this->GetIDForIdent("POWER"));
+        if(GetValueBoolean($this->GetIDForIdent("POWER"))) {
+            $params['Power'] = "true";
+        } else {
+            $params['Power'] = "false";
+        }
         $params['SetTemperature'] = $temperature;
         $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
         $params['EffectiveFlags'] = "1";
