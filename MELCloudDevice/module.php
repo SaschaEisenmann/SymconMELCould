@@ -40,6 +40,8 @@ class MELCloudDevice extends IPSModule
             $this->CreateToken();
         }
 
+        $token = $this->ReadPropertyString('Token');
+
         $deviceID = $this->ReadPropertyString('DeviceID');
         $buildingID = $this->ReadPropertyString('BuildingID');
 
@@ -47,6 +49,7 @@ class MELCloudDevice extends IPSModule
 
         $headers = array();
         $headers[] = "Accept: application/json";
+        $headers[] = "X-MitsContextKey: $token";
 
         IPS_LogMessage("SymconMELCloud", "Requesting status from '$url'");
         $result = $this->Request($url, 'GET', array(), $headers);
