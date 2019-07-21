@@ -20,5 +20,10 @@
       "type": "ValidationTextBox",
       "caption": "SerialNumber"
     }
-  ]
+  ],
+  "actions": [{
+    "type": "Button",
+    "label": "Update",
+    "onClick": "print_r(MCD_Update($id));"
+  }]
 }
