@@ -79,8 +79,8 @@ class MELCloudControl extends IPSModule
             IPS_SetProperty($instanceId, 'BuildingID', $buildingID);
             IPS_SetProperty($instanceId, 'DeviceName', $deviceName);
 
-            IPS_SetProperty($instanceId, 'Email', $this->ReadPropertyInteger('Email'));
-            IPS_SetProperty($instanceId, 'Password', $this->ReadPropertyInteger('Password'));
+            IPS_SetProperty($instanceId, 'Email', $this->ReadPropertyString('Email'));
+            IPS_SetProperty($instanceId, 'Password', $this->ReadPropertyString('Password'));
 
             IPS_ApplyChanges($instanceId);
 
