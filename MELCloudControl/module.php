@@ -55,6 +55,7 @@ class MELCloudControl extends IPSModule
 
     private function CreateOrUpdateDevice($device) {
         $deviceID = $device['DeviceID'];
+        $buildingID = $device['BuildingID'];
         $deviceName = $device['DeviceName'];
         $serialNumber = $device['SerialNumber'];
 
@@ -75,9 +76,15 @@ class MELCloudControl extends IPSModule
             IPS_SetName($instanceId, $deviceName);
 
             IPS_SetProperty($instanceId, 'DeviceID', $deviceID);
+            IPS_SetProperty($instanceId, 'BuildingID', $buildingID);
             IPS_SetProperty($instanceId, 'DeviceName', $deviceName);
 
+            IPS_SetProperty($instanceId, 'Email', $this->ReadPropertyInteger('Email'));
+            IPS_SetProperty($instanceId, 'Password', $this->ReadPropertyInteger('Password'));
+
             IPS_ApplyChanges($instanceId);
+
+            MCD_Update($instanceId);
         }
     }
 

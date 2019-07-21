@@ -6,6 +6,11 @@
       "caption": "DeviceID"
     },
     {
+      "name": "BuildingID",
+      "type": "ValidationTextBox",
+      "caption": "BuildingID"
+    },
+    {
       "name": "DeviceName",
       "type": "ValidationTextBox",
       "caption": "DeviceName"
