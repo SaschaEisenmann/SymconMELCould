@@ -1,0 +1,11 @@
+{
+  "id": "{FC66BB73-AB36-46B1-949C-5DD122696E2B}",
+  "name": "MelCloudControl",
+  "type": 1,
+  "vendor": "Sascha Eisenmann",
+  "aliases": ["MEL Cloud Control"],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "MCC"
+}

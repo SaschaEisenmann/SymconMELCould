@@ -1,0 +1,33 @@
+{
+  "elements": [
+    {
+      "name": "Email",
+      "type": "ValidationTextBox",
+      "caption": "E-Mail"
+    },
+    {
+      "name": "Password",
+      "type": "ValidationTextBox",
+      "caption": "Passwort"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Button",
+      "label": "Geräteabgleich",
+      "onClick": "print_r(MCC_Sync($id));"
+    }
+  ],
+  "status": [
+    {
+      "code": 102,
+      "icon": "active",
+      "caption": "Instanz ist aktiv"
+    },
+    {
+      "code": 201,
+      "icon": "error",
+      "caption": "Instanz ist fehlerhaft"
+    }
+  ]
+}
