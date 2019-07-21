@@ -29,6 +29,8 @@ class MELCloudDevice extends IPSModule
         $this->SetTimerInterval('Update', $this->ReadPropertyInteger('UpdateInterval') * 1000);
 
         $this->RegisterVariableBoolean('POWER', 'Power', '~Switch', 1);
+        $this->EnableAction("POWER");
+
         $this->RegisterVariableInteger('MODE', 'Mode', "", 2);
         // 0 -> Off
         // 1 -> SWW
@@ -48,9 +50,42 @@ class MELCloudDevice extends IPSModule
     public function RequestAction($Ident, $Value)
     {
         switch ($Ident) {
+            case "POWER":
+                $this->UpdatePower($Value);
+                break;
             case "SET_TEMPERATURE":
                     $this->UpdateSetTemperature($Value);
                 break;
+        }
+    }
+
+    public function UpdatePower($power) {
+        if (!$this->HasValidToken()) {
+            $this->CreateToken();
+        }
+
+        $token = $this->ReadPropertyString('Token');
+        $url = "https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta";
+
+        $headers = array();
+        $headers[] = "Accept: application/json";
+        $headers[] = "X-MitsContextKey: $token";
+
+        $params = array();
+
+        if($power) {
+            $params['Power'] = "true";
+        } else {
+            $params['Power'] = "false";
+        }
+        $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
+        $params['EffectiveFlags'] = "1";
+        $params['HasPendingCommand'] = "true";
+
+        $response = $this->Request($url, "POST", $params, $headers);
+
+        if(isset($response["HasPendingCommand"])) {
+            $this->Update();
         }
     }
 
@@ -75,7 +110,7 @@ class MELCloudDevice extends IPSModule
         $response = $this->Request($url, "POST", $params, $headers);
 
         if(isset($response["HasPendingCommand"])) {
-            SetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"), $temperature);
+            $this->Update();
         }
     }
 
