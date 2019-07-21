@@ -33,11 +33,13 @@ class MELCloudControl extends IPSModule
     }
 
     private function ListDevices() {
+        $token = $this->ReadPropertyString('Token');
+
         $url = "https://app.melcloud.com/Mitsubishi.Wifi.Client/User/ListDevices/";
 
         $headers = array();
-        $headers["Accept"] = "application/json";
-        $headers["X-MitsContextKey"] = $this->ReadPropertyString('Token');
+        $headers[] = "Accept: application/json";
+        $headers[] = "X-MitsContextKey: $token";
 
         $locations = $this->Request($url, 'GET', array(), $headers);
 
