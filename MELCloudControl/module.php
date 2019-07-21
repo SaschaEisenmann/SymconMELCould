@@ -173,11 +173,19 @@ class MELCloudControl extends IPSModule
 
         curl_setopt($client, CURLOPT_HTTPHEADER, $headers);
 
+        ob_start();
+        $out = fopen('php://output', 'w');
+        curl_setopt($client, CURLOPT_VERBOSE, true);
+        curl_setopt($client, CURLOPT_STDERR, $out);
 
         $result = curl_exec($client);
         $status = curl_getinfo($client, CURLINFO_HTTP_CODE);
 
         curl_close($client);
+
+        fclose($out);
+        $debug = ob_get_clean();
+        IPS_LogMessage("SymconMELCloud", "Curl: $debug");
 
         if ($status == '0') {
             $this->SetStatus(201);
