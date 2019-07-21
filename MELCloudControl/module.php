@@ -8,6 +8,7 @@ class MELCloudControl extends IPSModule
         $this->RegisterPropertyString('Password', '');
 
         $this->RegisterPropertyString('Token', '');
+        $this->RegisterPropertyString('TokenExpiry', '');
     }
 
     public function ApplyChanges()
@@ -17,9 +18,37 @@ class MELCloudControl extends IPSModule
 
     public function Sync()
     {
-        if ($this->ReadPropertyString('Token') == '') {
+        if (!$this->HasValidToken()) {
             $this->CreateToken();
         }
+    }
+
+    private function HasValidToken() {
+        if ($this->ReadPropertyString('Token') == '') {
+            IPS_LogMessage("SymconMELCloud", "No token present");
+            return false;
+        }
+
+        $tokenExpiryString = $this->ReadPropertyString('TokenExpiry');
+
+        if ($tokenExpiryString == '') {
+            IPS_LogMessage("SymconMELCloud", "Token expiry is unknown");
+            return false;
+        }
+
+        $tokenExpiry = strtotime($tokenExpiryString);
+        if($tokenExpiry == false) {
+            IPS_LogMessage("SymconMELCloud", "Token expiry is not a valid date");
+            return false;
+        }
+
+        if($tokenExpiry <= strtotime('-1 hour')) {
+            IPS_LogMessage("SymconMELCloud", "Token is expired or will in the next hour");
+            return false;
+        }
+
+        IPS_LogMessage("SymconMELCloud", "Valid token was found");
+        return true;
     }
 
     private function CreateToken()
@@ -34,13 +63,19 @@ class MELCloudControl extends IPSModule
         $headers = array();
         $headers[] = "Accept: application/json";
 
+        IPS_LogMessage("SymconMELCloud", "Requesting a new token from '$url'");
         $result = $this->Request($url, 'POST', $params, $headers);
 
         if (isset($result["LoginData"]) && isset($result["LoginData"]["ContextKey"])) {
             IPS_SetProperty($this->InstanceID, 'Token', $result["LoginData"]["ContextKey"]);
             IPS_ApplyChanges($this->InstanceID);
+        }
+
+        if($this->HasValidToken()) {
+            IPS_LogMessage("SymconMELCloud", "Successfully acquired a new token from '$url'");
             $this->SetStatus(102);
         } else {
+            IPS_LogMessage("SymconMELCloud", "Failed to acquire a new token from '$url'");
             $this->SetStatus(201);
         }
     }
