@@ -138,6 +138,8 @@ class MELCloudDevice extends IPSModule
 
         $token = $this->ReadPropertyString('Token');
 
+        IPS_LogMessage("SymconMELCloud", $token);
+
         $deviceID = $this->ReadPropertyString('DeviceID');
         $buildingID = $this->ReadPropertyString('BuildingID');
 
