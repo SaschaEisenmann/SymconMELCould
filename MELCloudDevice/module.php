@@ -19,7 +19,7 @@ class MELCloudDevice extends IPSModule
 
         $this->RegisterPropertyInteger('UpdateInterval', 120);
 
-        $this->RegisterTimer('Update', 0, 'MCD_Update($_IPS[\'TARGET\'], 0);');
+        $this->RegisterTimer('Update', 60000, 'MCD_Update($_IPS[\'TARGET\'], 0);');
     }
 
     public function ApplyChanges()
