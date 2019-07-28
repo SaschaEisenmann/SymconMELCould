@@ -239,7 +239,7 @@ class MELCloudDevice extends IPSModule
         curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
 //        curl_setopt($client, CURLOPT_USERAGENT, 'SymconBotvac');
 //        curl_setopt($client, CURLOPT_CONNECTTIMEOUT, 5);
-//        curl_setopt($client, CURLOPT_TIMEOUT, 5);
+        curl_setopt($client, CURLOPT_TIMEOUT, 5);
 
         if ($method == 'POST') {
             curl_setopt($client, CURLOPT_POSTFIELDS, http_build_query($params));
