@@ -26,9 +26,21 @@
       "caption": "Sekunden"
     }
   ],
-  "actions": [{
-    "type": "Button",
-    "label": "Update",
-    "onClick": "print_r(MCD_Update($id));"
-  }]
+  "actions": [
+    {
+      "type": "Button",
+      "label": "Update",
+      "onClick": "print_r(MCD_Update($id));"
+    },
+    {
+      "type": "Button",
+      "label": "PowerOn",
+      "onClick": "print_r(MCD_UpdatePower($id, true));"
+    },
+    {
+      "type": "Button",
+      "label": "PowerOff",
+      "onClick": "print_r(MCD_UpdatePower($id, false));"
+    }
+  ]
 }
