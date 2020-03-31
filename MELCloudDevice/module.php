@@ -42,6 +42,7 @@ class MELCloudDevice extends IPSModule
         $this->EnableAction("POWER");
 
         $this->RegisterVariableInteger('MODE', 'Mode', "MCD_Mode", 2);
+        $this->EnableAction("MODE");
         // 0 -> Off
         // 1 -> SWW
         // 2 -> Heating
