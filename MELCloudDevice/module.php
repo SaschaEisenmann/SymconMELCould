@@ -237,7 +237,7 @@ class MELCloudDevice extends IPSModule
         $params['SetFanSpeed'] = $speed;
         $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
         $params['EffectiveFlags'] = "8";
-        $params['HasPendingCommand'] = "true";
+        //$params['HasPendingCommand'] = "true";
 
         $response = $this->Request($url, "POST", $params, $headers);
 
