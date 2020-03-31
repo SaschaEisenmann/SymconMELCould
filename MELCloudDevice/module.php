@@ -32,12 +32,24 @@ class MELCloudDevice extends IPSModule
 
 
         IPS_CreateVariableProfile("MCD_Mode", 1);
-        //IPS_SetVariableProfileValues("MCD_Mode", 1, 8, 1);
         IPS_SetVariableProfileAssociation("MCD_Mode", 1, "Heizen", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 3, "Kühlen", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 2, "Trocken", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 7, "Lüfter", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 8, "Auto", "", "-1");
+
+
+        if(IPS_VariableProfileExists("MCD_FanSpeed")) {
+            IPS_DeleteVariableProfile("MCD_FanSpeed");
+        }
+
+
+        IPS_CreateVariableProfile("MCD_FanSpeed", 1);
+        IPS_SetVariableProfileValues("MCD_FanSpeed", 0, 5, 1);
+        IPS_SetVariableProfileAssociation("MCD_FanSpeed", 0, "Auto", "", "-1");
+
+        $this->RegisterVariableInteger('FAN_SPEED', 'FanSpeed', "MCD_FanSpeed", 2);
+        $this->EnableAction("FAN_SPEED");
 
         $this->SetTimerInterval('Update', $this->ReadPropertyInteger('UpdateInterval') * 1000);
 
@@ -74,6 +86,9 @@ class MELCloudDevice extends IPSModule
                 break;
             case "MODE":
                 $this->UpdateMode($Value);
+                break;
+            case "FAN_SPEED":
+                $this->UpdateFanSpeed($Value);
                 break;
         }
     }
@@ -159,6 +174,32 @@ class MELCloudDevice extends IPSModule
         }
     }
 
+    public function UpdateFanSpeed($speed) {
+        if (!$this->HasValidToken()) {
+            $this->CreateToken();
+        }
+
+        $token = $this->ReadPropertyString('Token');
+        $url = "https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta";
+
+        $headers = array();
+        $headers[] = "Accept: application/json";
+        $headers[] = "X-MitsContextKey: $token";
+
+        $params = array();
+
+        $params['SetFanSpeed'] = $speed;
+        $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
+        $params['EffectiveFlags'] = "8";
+        $params['HasPendingCommand'] = "true";
+
+        $response = $this->Request($url, "POST", $params, $headers);
+
+        if(isset($response["HasPendingCommand"])) {
+            $this->Update();
+        }
+    }
+
     public function Update() {
         $status = $this->RequestStatus();
 
@@ -174,6 +215,9 @@ class MELCloudDevice extends IPSModule
 
         SetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"), $status['SetTemperature']);
         IPS_SetHidden($this->GetIDForIdent('SET_TEMPERATURE'), !$power);
+
+        SetValueFloat($this->GetIDForIdent("FAN_SPEED"), $status['SetFanSpeed']);
+        IPS_SetHidden($this->GetIDForIdent('FAN_SPEED'), !$power);
     }
 
     private function RequestStatus() {
