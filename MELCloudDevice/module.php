@@ -47,8 +47,13 @@ class MELCloudDevice extends IPSModule
         IPS_CreateVariableProfile("MCD_FanSpeed", 1);
         IPS_SetVariableProfileValues("MCD_FanSpeed", 0, 5, 1);
         IPS_SetVariableProfileAssociation("MCD_FanSpeed", 0, "Auto", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_FanSpeed", 1, "1", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_FanSpeed", 2, "2", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_FanSpeed", 3, "3", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_FanSpeed", 4, "4", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_FanSpeed", 5, "5", "", "-1");
 
-        $this->RegisterVariableInteger('FAN_SPEED', 'FanSpeed', "MCD_FanSpeed", 2);
+        $this->RegisterVariableInteger('FAN_SPEED', 'FanSpeed', "MCD_FanSpeed", 0);
         $this->EnableAction("FAN_SPEED");
 
         $this->SetTimerInterval('Update', $this->ReadPropertyInteger('UpdateInterval') * 1000);
