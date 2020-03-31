@@ -208,6 +208,9 @@ class MELCloudDevice extends IPSModule
     public function Update() {
         $status = $this->RequestStatus();
 
+
+        IPS_LogMessage("SymconMELCloud", json_encode($status));
+
         $power = $status['Power'];
 
         SetValueBoolean($this->GetIDForIdent("POWER"), $power);
