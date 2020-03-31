@@ -19,6 +19,13 @@ class MELCloudDevice extends IPSModule
 
         $this->RegisterPropertyInteger('UpdateInterval', 120);
 
+        $this->RegisterTimer('Update', 60000, 'MCD_Update($_IPS[\'TARGET\'], 0);');
+    }
+
+    public function ApplyChanges()
+    {
+        parent::ApplyChanges();
+
         if(IPS_VariableProfileExists("MCD_Mode")) {
             IPS_DeleteVariableProfile("MCD_Mode");
         }
@@ -33,13 +40,6 @@ class MELCloudDevice extends IPSModule
         IPS_SetVariableProfileAssociation("MCD_Mode", 4, "Defrost", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 5, "Standby", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 6, "Legionella", "", "-1");
-
-        $this->RegisterTimer('Update', 60000, 'MCD_Update($_IPS[\'TARGET\'], 0);');
-    }
-
-    public function ApplyChanges()
-    {
-        parent::ApplyChanges();
 
         $this->SetTimerInterval('Update', $this->ReadPropertyInteger('UpdateInterval') * 1000);
 
