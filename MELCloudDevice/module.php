@@ -221,7 +221,7 @@ class MELCloudDevice extends IPSModule
         SetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"), $status['SetTemperature']);
         IPS_SetHidden($this->GetIDForIdent('SET_TEMPERATURE'), !$power);
 
-        SetValueFloat($this->GetIDForIdent("FAN_SPEED"), $status['SetFanSpeed']);
+        SetValueInteger($this->GetIDForIdent("FAN_SPEED"), $status['SetFanSpeed']);
         IPS_SetHidden($this->GetIDForIdent('FAN_SPEED'), !$power);
     }
 
