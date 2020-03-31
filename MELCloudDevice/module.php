@@ -165,7 +165,7 @@ class MELCloudDevice extends IPSModule
         $response = $this->Request($url, "POST", $params, $headers);
 
         if(isset($response["HasPendingCommand"])) {
-            $this->Update();
+            $this->UpdateFromStatus($response);
         }
     }
 
@@ -190,7 +190,7 @@ class MELCloudDevice extends IPSModule
         $response = $this->Request($url, "POST", $params, $headers);
 
         if(isset($response["HasPendingCommand"])) {
-            $this->Update();
+            $this->UpdateFromStatus($response);
         }
     }
 
@@ -216,7 +216,7 @@ class MELCloudDevice extends IPSModule
         $response = $this->Request($url, "POST", $params, $headers);
 
         if(isset($response["HasPendingCommand"])) {
-            $this->Update();
+            $this->UpdateFromStatus($response);
         }
     }
 
@@ -242,7 +242,7 @@ class MELCloudDevice extends IPSModule
         $response = $this->Request($url, "POST", $params, $headers);
 
         if(isset($response["HasPendingCommand"])) {
-            $this->Update();
+            $this->UpdateFromStatus($response);
         }
     }
 
@@ -268,7 +268,7 @@ class MELCloudDevice extends IPSModule
         $response = $this->Request($url, "POST", $params, $headers);
 
         if(isset($response["HasPendingCommand"])) {
-            $this->Update();
+            $this->UpdateFromStatus($response);
         }
     }
 
@@ -294,14 +294,17 @@ class MELCloudDevice extends IPSModule
         $response = $this->Request($url, "POST", $params, $headers);
 
         if(isset($response["HasPendingCommand"])) {
-            $this->Update();
+            $this->UpdateFromStatus($response);
         }
     }
 
     public function Update() {
         $status = $this->RequestStatus();
 
+        $this->UpdateFromStatus($status);
+    }
 
+    private function UpdateFromStatus($status) {
         IPS_LogMessage("SymconMELCloud", json_encode($status));
 
         $power = $status['Power'];
