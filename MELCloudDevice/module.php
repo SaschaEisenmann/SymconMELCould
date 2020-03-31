@@ -1,4 +1,5 @@
 <?php
+
 class MELCloudDevice extends IPSModule
 {
     public function Create()
@@ -26,7 +27,7 @@ class MELCloudDevice extends IPSModule
     {
         parent::ApplyChanges();
 
-        if(IPS_VariableProfileExists("MCD_Mode")) {
+        if (IPS_VariableProfileExists("MCD_Mode")) {
             IPS_DeleteVariableProfile("MCD_Mode");
         }
 
@@ -40,7 +41,7 @@ class MELCloudDevice extends IPSModule
         IPS_SetVariableProfileAssociation("MCD_Mode", 8, "Auto", "", "-1");
 
 
-        if(IPS_VariableProfileExists("MCD_FanSpeed")) {
+        if (IPS_VariableProfileExists("MCD_FanSpeed")) {
             IPS_DeleteVariableProfile("MCD_FanSpeed");
         }
 
@@ -55,7 +56,7 @@ class MELCloudDevice extends IPSModule
         IPS_SetVariableProfileAssociation("MCD_FanSpeed", 5, "5", "", "-1");
 
 
-        if(IPS_VariableProfileExists("MCD_HorizontalFanPosition")) {
+        if (IPS_VariableProfileExists("MCD_HorizontalFanPosition")) {
             IPS_DeleteVariableProfile("MCD_HorizontalFanPosition");
         }
         IPS_CreateVariableProfile("MCD_HorizontalFanPosition", 1);
@@ -68,7 +69,7 @@ class MELCloudDevice extends IPSModule
         IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 8, "LeftAndRight", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 12, "Swing", "", "-1");
 
-        if(IPS_VariableProfileExists("MCD_VerticalFanPosition")) {
+        if (IPS_VariableProfileExists("MCD_VerticalFanPosition")) {
             IPS_DeleteVariableProfile("MCD_VerticalFanPosition");
         }
         IPS_CreateVariableProfile("MCD_VerticalFanPosition", 1);
@@ -139,7 +140,8 @@ class MELCloudDevice extends IPSModule
         }
     }
 
-    public function UpdatePower($power) {
+    public function UpdatePower($power)
+    {
         if (!$this->HasValidToken()) {
             $this->CreateToken();
         }
@@ -153,7 +155,7 @@ class MELCloudDevice extends IPSModule
 
         $params = array();
 
-        if($power) {
+        if ($power) {
             $params['Power'] = "true";
         } else {
             $params['Power'] = "false";
@@ -164,12 +166,13 @@ class MELCloudDevice extends IPSModule
 
         $response = $this->Request($url, "POST", $params, $headers);
 
-        if(isset($response["HasPendingCommand"])) {
-            $this->UpdateFromStatus($response);
+        if (isset($response["HasPendingCommand"])) {
+            $this->UpdateFromStatus($response, "POWER");
         }
     }
 
-    public function UpdateSetTemperature($temperature) {
+    public function UpdateSetTemperature($temperature)
+    {
         if (!$this->HasValidToken()) {
             $this->CreateToken();
         }
@@ -189,12 +192,13 @@ class MELCloudDevice extends IPSModule
 
         $response = $this->Request($url, "POST", $params, $headers);
 
-        if(isset($response["HasPendingCommand"])) {
-            $this->UpdateFromStatus($response);
+        if (isset($response["HasPendingCommand"])) {
+            $this->UpdateFromStatus($response, "SET_TEMPERATURE");
         }
     }
 
-    public function UpdateMode($mode) {
+    public function UpdateMode($mode)
+    {
         if (!$this->HasValidToken()) {
             $this->CreateToken();
         }
@@ -215,12 +219,13 @@ class MELCloudDevice extends IPSModule
 
         $response = $this->Request($url, "POST", $params, $headers);
 
-        if(isset($response["HasPendingCommand"])) {
-            $this->UpdateFromStatus($response);
+        if (isset($response["HasPendingCommand"])) {
+            $this->UpdateFromStatus($response, "MODE");
         }
     }
 
-    public function UpdateFanSpeed($speed) {
+    public function UpdateFanSpeed($speed)
+    {
         if (!$this->HasValidToken()) {
             $this->CreateToken();
         }
@@ -241,12 +246,13 @@ class MELCloudDevice extends IPSModule
 
         $response = $this->Request($url, "POST", $params, $headers);
 
-        if(isset($response["HasPendingCommand"])) {
-            $this->UpdateFromStatus($response);
+        if (isset($response["HasPendingCommand"])) {
+            $this->UpdateFromStatus($response, "FAN_SPEED");
         }
     }
 
-    public function UpdateHorizontalFanPosition($position) {
+    public function UpdateHorizontalFanPosition($position)
+    {
         if (!$this->HasValidToken()) {
             $this->CreateToken();
         }
@@ -267,12 +273,13 @@ class MELCloudDevice extends IPSModule
 
         $response = $this->Request($url, "POST", $params, $headers);
 
-        if(isset($response["HasPendingCommand"])) {
-            $this->UpdateFromStatus($response);
+        if (isset($response["HasPendingCommand"])) {
+            $this->UpdateFromStatus($response, "HORIZONTAL_FAN_POSITION");
         }
     }
 
-    public function UpdateVerticalFanPosition($position) {
+    public function UpdateVerticalFanPosition($position)
+    {
         if (!$this->HasValidToken()) {
             $this->CreateToken();
         }
@@ -293,45 +300,58 @@ class MELCloudDevice extends IPSModule
 
         $response = $this->Request($url, "POST", $params, $headers);
 
-        if(isset($response["HasPendingCommand"])) {
-            $this->UpdateFromStatus($response);
+        if (isset($response["HasPendingCommand"])) {
+            $this->UpdateFromStatus($response, "VERTICAL_FAN_POSITION");
         }
     }
 
-    public function Update() {
+    public function Update()
+    {
         $status = $this->RequestStatus();
 
         $this->UpdateFromStatus($status);
     }
 
-    private function UpdateFromStatus($status) {
+    private function UpdateFromStatus($status, $for = null)
+    {
         IPS_LogMessage("SymconMELCloud", json_encode($status));
-        IPS_LogMessage("SymconMELCloudTemp", $status['VaneVertical']);
 
-        $power = $status['Power'];
+        if (!$for || $for == "POWER") {
+            $power = $status['Power'];
+            SetValueBoolean($this->GetIDForIdent("POWER"), $power);
+            IPS_SetHidden($this->GetIDForIdent('MODE'), !$power);
+            IPS_SetHidden($this->GetIDForIdent('ROOM_TEMPERATURE'), !$power);
+            IPS_SetHidden($this->GetIDForIdent('SET_TEMPERATURE'), !$power);
+            IPS_SetHidden($this->GetIDForIdent('FAN_SPEED'), !$power);
+            IPS_SetHidden($this->GetIDForIdent('VERTICAL_FAN_POSITION'), !$power);
+            IPS_SetHidden($this->GetIDForIdent('HORIZONTAL_FAN_POSITION'), !$power);
+        }
 
-        SetValueBoolean($this->GetIDForIdent("POWER"), $power);
-
-        SetValueInteger($this->GetIDForIdent("MODE"), $status["OperationMode"]);
-        IPS_SetHidden($this->GetIDForIdent('MODE'), !$power);
+        if (!$for || $for == "MODE") {
+            SetValueInteger($this->GetIDForIdent("MODE"), $status["OperationMode"]);
+        }
 
         SetValueFloat($this->GetIDForIdent("ROOM_TEMPERATURE"), $status['RoomTemperature']);
-        IPS_SetHidden($this->GetIDForIdent('ROOM_TEMPERATURE'), !$power);
 
-        SetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"), $status['SetTemperature']);
-        IPS_SetHidden($this->GetIDForIdent('SET_TEMPERATURE'), !$power);
+        if (!$for || $for == "SET_TEMPERATURE") {
+            SetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"), $status['SetTemperature']);
+        }
 
-        SetValueInteger($this->GetIDForIdent("FAN_SPEED"), $status['SetFanSpeed']);
-        IPS_SetHidden($this->GetIDForIdent('FAN_SPEED'), !$power);
+        if (!$for || $for == "FAN_SPEED") {
+            SetValueInteger($this->GetIDForIdent("FAN_SPEED"), $status['SetFanSpeed']);
+        }
 
-        SetValueInteger($this->GetIDForIdent("VERTICAL_FAN_POSITION"), $status['VaneVertical']);
-        IPS_SetHidden($this->GetIDForIdent('VERTICAL_FAN_POSITION'), !$power);
+        if (!$for || $for == "VERTICAL_FAN_POSITION") {
+            SetValueInteger($this->GetIDForIdent("VERTICAL_FAN_POSITION"), $status['VaneVertical']);
+        }
 
-        SetValueInteger($this->GetIDForIdent("HORIZONTAL_FAN_POSITION"), $status['VaneHorizontal']);
-        IPS_SetHidden($this->GetIDForIdent('HORIZONTAL_FAN_POSITION'), !$power);
+        if (!$for || $for == "HORIZONTAL_FAN_POSITION") {
+            SetValueInteger($this->GetIDForIdent("HORIZONTAL_FAN_POSITION"), $status['VaneHorizontal']);
+        }
     }
 
-    private function RequestStatus() {
+    private function RequestStatus()
+    {
         if (!$this->HasValidToken()) {
             $this->CreateToken();
         }
@@ -355,7 +375,8 @@ class MELCloudDevice extends IPSModule
         return $result;
     }
 
-    private function HasValidToken() {
+    private function HasValidToken()
+    {
         $token = $this->ReadPropertyString('Token');
         if ($token == '') {
             IPS_LogMessage("SymconMELCloud", "No token present");
@@ -374,12 +395,12 @@ class MELCloudDevice extends IPSModule
         $tokenExpiry = strtotime($tokenExpiryString);
         date_default_timezone_set($tz);
 
-        if($tokenExpiry == false) {
+        if ($tokenExpiry == false) {
             IPS_LogMessage("SymconMELCloud", "Token expiry is not a valid date");
             return false;
         }
 
-        if($tokenExpiry <= strtotime('-1 hour')) {
+        if ($tokenExpiry <= strtotime('-1 hour')) {
             IPS_LogMessage("SymconMELCloud", "Token is expired or will in the next hour");
             return false;
         }
@@ -391,7 +412,7 @@ class MELCloudDevice extends IPSModule
         $headers[] = "X-MitsContextKey: $token";
 
         $result = $this->Request($url, 'GET', array(), $headers);
-        if($result == false) {
+        if ($result == false) {
             IPS_LogMessage("SymconMELCloud", "Test call returned an error");
             return false;
         }
@@ -421,7 +442,7 @@ class MELCloudDevice extends IPSModule
             IPS_ApplyChanges($this->InstanceID);
         }
 
-        if($this->HasValidToken()) {
+        if ($this->HasValidToken()) {
             IPS_LogMessage("SymconMELCloud", "Successfully acquired a new token from '$url'");
             $this->SetStatus(102);
         } else {
