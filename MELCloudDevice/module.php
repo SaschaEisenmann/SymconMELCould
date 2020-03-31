@@ -19,6 +19,11 @@ class MELCloudDevice extends IPSModule
 
         $this->RegisterPropertyInteger('UpdateInterval', 120);
 
+        if(IPS_VariableProfileExists("MCD_Mode")) {
+            IPS_DeleteVariableProfile("MCD_Mode");
+        }
+
+
         IPS_CreateVariableProfile("MCD_Mode", 1);
         IPS_SetVariableProfileValues("MCD_Mode", 0, 6, 1);
         IPS_SetVariableProfileAssociation("MCD_Mode", 0, "Aus", "", "-1");
