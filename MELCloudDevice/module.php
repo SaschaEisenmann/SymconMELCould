@@ -306,6 +306,7 @@ class MELCloudDevice extends IPSModule
 
     private function UpdateFromStatus($status) {
         IPS_LogMessage("SymconMELCloud", json_encode($status));
+        IPS_LogMessage("SymconMELCloudTemp", $status['VaneVertical']);
 
         $power = $status['Power'];
 
