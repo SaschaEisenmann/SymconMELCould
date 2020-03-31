@@ -72,10 +72,10 @@ class MELCloudDevice extends IPSModule
                 $this->UpdatePower($Value);
                 break;
             case "SET_TEMPERATURE":
-                    $this->UpdateSetTemperature($Value);
+                $this->UpdateSetTemperature($Value);
                 break;
             case "MODE":
-                $this->UpdateSetTemperature($Value);
+                $this->UpdateMode($Value);
                 break;
         }
     }
