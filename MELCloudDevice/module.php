@@ -32,7 +32,7 @@ class MELCloudDevice extends IPSModule
 
 
         IPS_CreateVariableProfile("MCD_Mode", 1);
-        IPS_SetVariableProfileValues("MCD_Mode", 1, 8, 1);
+        //IPS_SetVariableProfileValues("MCD_Mode", 1, 8, 1);
         IPS_SetVariableProfileAssociation("MCD_Mode", 1, "Heizen", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 3, "Kühlen", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 2, "Trocken", "", "-1");
