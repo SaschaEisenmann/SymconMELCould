@@ -54,6 +54,10 @@ class MELCloudDevice extends IPSModule
         IPS_SetVariableProfileAssociation("MCD_FanSpeed", 4, "4", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_FanSpeed", 5, "5", "", "-1");
 
+
+        if(IPS_VariableProfileExists("MCD_HorizontalFanPosition")) {
+            IPS_DeleteVariableProfile("MCD_HorizontalFanPosition");
+        }
         IPS_CreateVariableProfile("MCD_HorizontalFanPosition", 1);
         IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 0, "Auto", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 1, "Left", "", "-1");
@@ -64,6 +68,9 @@ class MELCloudDevice extends IPSModule
         IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 8, "LeftAndRight", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 12, "Swing", "", "-1");
 
+        if(IPS_VariableProfileExists("MCD_VerticalFanPosition")) {
+            IPS_DeleteVariableProfile("MCD_VerticalFanPosition");
+        }
         IPS_CreateVariableProfile("MCD_VerticalFanPosition", 1);
         IPS_SetVariableProfileAssociation("MCD_VerticalFanPosition", 0, "Auto", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_VerticalFanPosition", 1, "Top", "", "-1");
