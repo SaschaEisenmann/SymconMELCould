@@ -32,6 +32,7 @@ class MELCloudDevice extends IPSModule
 
 
         IPS_CreateVariableProfile("MCD_Mode", 1);
+        IPS_SetVariableProfileAssociation("MCD_Mode", 0, "Off", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 1, "Heizen", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 3, "Kühlen", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 2, "Trocken", "", "-1");
@@ -53,16 +54,43 @@ class MELCloudDevice extends IPSModule
         IPS_SetVariableProfileAssociation("MCD_FanSpeed", 4, "4", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_FanSpeed", 5, "5", "", "-1");
 
+        IPS_CreateVariableProfile("MCD_HorizontalFanPosition", 1);
+        IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 0, "Auto", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 1, "Left", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 2, "CenterLeft", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 3, "Center", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 4, "CenterRight", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 5, "Right", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 8, "LeftAndRight", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_HorizontalFanPosition", 12, "Swing", "", "-1");
+
+        IPS_CreateVariableProfile("MCD_VerticalFanPosition", 1);
+        IPS_SetVariableProfileAssociation("MCD_VerticalFanPosition", 0, "Auto", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_VerticalFanPosition", 1, "Top", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_VerticalFanPosition", 2, "CenterTop", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_VerticalFanPosition", 3, "Center", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_VerticalFanPosition", 4, "CenterBottom", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_VerticalFanPosition", 5, "Bottom", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_VerticalFanPosition", 7, "Swing", "", "-1");
+
+
         $this->RegisterVariableInteger('FAN_SPEED', 'FanSpeed', "MCD_FanSpeed", 0);
         $this->EnableAction("FAN_SPEED");
 
         $this->SetTimerInterval('Update', $this->ReadPropertyInteger('UpdateInterval') * 1000);
 
-        $this->RegisterVariableBoolean('POWER', 'Power', '~Switch', 1);
+        $this->RegisterVariableBoolean('POWER', 'Power', '~Switch', 0);
         $this->EnableAction("POWER");
 
-        $this->RegisterVariableInteger('MODE', 'Mode', "MCD_Mode", 2);
+        $this->RegisterVariableInteger('MODE', 'Mode', "MCD_Mode", 0);
         $this->EnableAction("MODE");
+
+        $this->RegisterVariableInteger('HORIZONTAL_FAN_POSITION', 'HorizontalFanPosition', "MCD_HorizontalFanPosition", 0);
+        $this->EnableAction("HORIZONTAL_FAN_POSITION");
+
+        $this->RegisterVariableInteger('VERTICAL_FAN_POSITION', 'VerticalFanPosition', "MCD_VerticalFanPosition", 0);
+        $this->EnableAction("VERTICAL_FAN_POSITION");
+
         // 0 -> Off
         // 1 -> SWW
         // 2 -> Heating
@@ -94,6 +122,12 @@ class MELCloudDevice extends IPSModule
                 break;
             case "FAN_SPEED":
                 $this->UpdateFanSpeed($Value);
+                break;
+            case "HORIZONTAL_FAN_POSITION":
+                $this->UpdateHorizontalFanPosition($Value);
+                break;
+            case "VERTICAL_FAN_POSITION":
+                $this->UpdateVerticalFanPosition($Value);
                 break;
         }
     }
@@ -205,6 +239,58 @@ class MELCloudDevice extends IPSModule
         }
     }
 
+    public function UpdateHorizontalFanPosition($position) {
+        if (!$this->HasValidToken()) {
+            $this->CreateToken();
+        }
+
+        $token = $this->ReadPropertyString('Token');
+        $url = "https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta";
+
+        $headers = array();
+        $headers[] = "Accept: application/json";
+        $headers[] = "X-MitsContextKey: $token";
+
+        $params = array();
+
+        $params['VaneHorizontal'] = $position;
+        $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
+        $params['EffectiveFlags'] = "16";
+        $params['HasPendingCommand'] = "true";
+
+        $response = $this->Request($url, "POST", $params, $headers);
+
+        if(isset($response["HasPendingCommand"])) {
+            $this->Update();
+        }
+    }
+
+    public function UpdateVerticalFanPosition($position) {
+        if (!$this->HasValidToken()) {
+            $this->CreateToken();
+        }
+
+        $token = $this->ReadPropertyString('Token');
+        $url = "https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta";
+
+        $headers = array();
+        $headers[] = "Accept: application/json";
+        $headers[] = "X-MitsContextKey: $token";
+
+        $params = array();
+
+        $params['VaneVertical'] = $position;
+        $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
+        $params['EffectiveFlags'] = "256";
+        $params['HasPendingCommand'] = "true";
+
+        $response = $this->Request($url, "POST", $params, $headers);
+
+        if(isset($response["HasPendingCommand"])) {
+            $this->Update();
+        }
+    }
+
     public function Update() {
         $status = $this->RequestStatus();
 
@@ -226,6 +312,12 @@ class MELCloudDevice extends IPSModule
 
         SetValueInteger($this->GetIDForIdent("FAN_SPEED"), $status['SetFanSpeed']);
         IPS_SetHidden($this->GetIDForIdent('FAN_SPEED'), !$power);
+
+        SetValueInteger($this->GetIDForIdent("VERTICAL_FAN_POSITION"), $status['VaneVertical']);
+        IPS_SetHidden($this->GetIDForIdent('VERTICAL_FAN_POSITION'), !$power);
+
+        SetValueInteger($this->GetIDForIdent("HORIZONTAL_FAN_POSITION"), $status['VaneHorizontal']);
+        IPS_SetHidden($this->GetIDForIdent('HORIZONTAL_FAN_POSITION'), !$power);
     }
 
     private function RequestStatus() {
