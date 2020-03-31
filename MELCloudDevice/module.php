@@ -19,6 +19,16 @@ class MELCloudDevice extends IPSModule
 
         $this->RegisterPropertyInteger('UpdateInterval', 120);
 
+        IPS_CreateVariableProfile("MCD_Mode", 1);
+        IPS_SetVariableProfileValues("MCD_Mode", 0, 6, 1);
+        IPS_SetVariableProfileAssociation("MCD_Mode", 0, "Aus", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_Mode", 1, "SWW", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_Mode", 2, "Heizen", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_Mode", 3, "Kühlen", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_Mode", 4, "Defrost", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_Mode", 5, "Standby", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_Mode", 6, "Legionella", "", "-1");
+
         $this->RegisterTimer('Update', 60000, 'MCD_Update($_IPS[\'TARGET\'], 0);');
     }
 
@@ -31,7 +41,7 @@ class MELCloudDevice extends IPSModule
         $this->RegisterVariableBoolean('POWER', 'Power', '~Switch', 1);
         $this->EnableAction("POWER");
 
-        $this->RegisterVariableInteger('MODE', 'Mode', "", 2);
+        $this->RegisterVariableInteger('MODE', 'Mode', "MCD_Mode", 2);
         // 0 -> Off
         // 1 -> SWW
         // 2 -> Heating
