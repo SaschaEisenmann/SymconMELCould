@@ -32,14 +32,12 @@ class MELCloudDevice extends IPSModule
 
 
         IPS_CreateVariableProfile("MCD_Mode", 1);
-        IPS_SetVariableProfileValues("MCD_Mode", 0, 6, 1);
-        IPS_SetVariableProfileAssociation("MCD_Mode", 0, "Aus", "", "-1");
-        IPS_SetVariableProfileAssociation("MCD_Mode", 1, "SWW", "", "-1");
-        IPS_SetVariableProfileAssociation("MCD_Mode", 2, "Heizen", "", "-1");
+        IPS_SetVariableProfileValues("MCD_Mode", 1, 8, 1);
+        IPS_SetVariableProfileAssociation("MCD_Mode", 1, "Heizen", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_Mode", 3, "Kühlen", "", "-1");
-        IPS_SetVariableProfileAssociation("MCD_Mode", 4, "Defrost", "", "-1");
-        IPS_SetVariableProfileAssociation("MCD_Mode", 5, "Standby", "", "-1");
-        IPS_SetVariableProfileAssociation("MCD_Mode", 6, "Legionella", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_Mode", 2, "Trocken", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_Mode", 7, "Lüfter", "", "-1");
+        IPS_SetVariableProfileAssociation("MCD_Mode", 8, "Auto", "", "-1");
 
         $this->SetTimerInterval('Update', $this->ReadPropertyInteger('UpdateInterval') * 1000);
 
