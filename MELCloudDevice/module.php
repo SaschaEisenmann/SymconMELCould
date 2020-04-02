@@ -305,6 +305,62 @@ class MELCloudDevice extends IPSModule
         }
     }
 
+    public function Set(boolean $power, int $mode, int $temperature, int $fanSpeed, int $horizontalFanPosition, int $verticalFanPosition)
+    {
+        if($power == null) {
+            $power = GetValueBoolean($this->GetIDForIdent("POWER"));
+        }
+
+        if($mode == null) {
+            $mode = GetValueInteger($this->GetIDForIdent("MODE"));
+        }
+
+        if($temperature == null) {
+            $temperature = GetValueInteger($this->GetIDForIdent("SET_TEMPERATURE"));
+        }
+
+        if($fanSpeed == null) {
+            $fanSpeed = GetValueInteger($this->GetIDForIdent("FAN_SPEED"));
+        }
+
+        if($horizontalFanPosition == null) {
+            $horizontalFanPosition = GetValueInteger($this->GetIDForIdent("HORIZONTAL_FAN_POSITION"));
+        }
+
+        if($verticalFanPosition == null) {
+            $verticalFanPosition = GetValueInteger($this->GetIDForIdent("VERTICAL_FAN_POSITION"));
+        }
+
+        if (!$this->HasValidToken()) {
+            $this->CreateToken();
+        }
+
+        $token = $this->ReadPropertyString('Token');
+        $url = "https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta";
+
+        $headers = array();
+        $headers[] = "Accept: application/json";
+        $headers[] = "X-MitsContextKey: $token";
+
+        $params = array();
+        $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
+        $params['EffectiveFlags'] = "1";
+        $params['HasPendingCommand'] = "true";
+
+        $params['Power'] = $power;
+        $params['OperationMode'] = $mode;
+        $params['SetTemperature'] = $temperature;
+        $params['SetFanSpeed'] = $fanSpeed;
+        $params['VaneHorizontal'] = $horizontalFanPosition;
+        $params['VaneVertical'] = $verticalFanPosition;
+
+        $response = $this->Request($url, "POST", $params, $headers);
+
+        if (isset($response["HasPendingCommand"])) {
+            $this->UpdateFromStatus($response, null);
+        }
+    }
+
     public function Update()
     {
         $status = $this->RequestStatus();
