@@ -295,7 +295,7 @@ class MELCloudDevice extends IPSModule
 
         $params['VaneVertical'] = $position;
         $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
-        $params['EffectiveFlags'] = "256";
+        $params['EffectiveFlags'] = "272280";
         $params['HasPendingCommand'] = "true";
 
         $response = $this->Request($url, "POST", $params, $headers);
@@ -344,7 +344,7 @@ class MELCloudDevice extends IPSModule
 
         $params = array();
         $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
-        $params['EffectiveFlags'] = "1";
+        $params['EffectiveFlags'] = "287";
         $params['HasPendingCommand'] = "true";
 
         $params['Power'] = $power;
