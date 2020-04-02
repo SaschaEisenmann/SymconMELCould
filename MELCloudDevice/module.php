@@ -354,6 +354,20 @@ class MELCloudDevice extends IPSModule
         $params['VaneHorizontal'] = $horizontalFanPosition;
         $params['VaneVertical'] = $verticalFanPosition;
 
+        $data = array(
+            'DeviceID' => $this->ReadPropertyString('DeviceID'),
+            'Power' => $power,
+            'SetTemperature' => $temperature,
+            'SetFanSpeed' => $fanSpeed,
+            'VaneHorizontal' => $horizontalFanPosition,
+            'VaneVertical' => $verticalFanPosition,
+            'EffectiveFlags' => "287",
+        );
+
+        $json = json_encode($data);
+
+        IPS_LogMessage("SymconMELCloud", "Request: $json");
+
         $response = $this->Request($url, "POST", $params, $headers);
 
         if (isset($response["HasPendingCommand"])) {
@@ -507,7 +521,7 @@ class MELCloudDevice extends IPSModule
         }
     }
 
-    public function Request($url, $method, $params = array(), $headers = array())
+    public function Request($url, $method, $params = array(), $headers = array(), $body = null)
     {
         $client = curl_init($url);
         curl_setopt($client, CURLOPT_CUSTOMREQUEST, $method);
