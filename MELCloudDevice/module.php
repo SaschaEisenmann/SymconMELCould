@@ -551,6 +551,7 @@ class MELCloudDevice extends IPSModule
         fclose($out);
         $debug = ob_get_clean();
         IPS_LogMessage("SymconMELCloud", "Curl: $debug");
+        IPS_LogMessage("SymconMELCloud", "Curl: $out");
 
         if ($status == '0') {
             $this->SetStatus(201);
