@@ -344,7 +344,6 @@ class MELCloudDevice extends IPSModule
 
         $params = array();
         $params['DeviceID'] = $this->ReadPropertyString('DeviceID');
-        $params['EffectiveFlags'] = "287";
         $params['HasPendingCommand'] = "true";
 
         $params['Power'] = $power;
