@@ -307,27 +307,27 @@ class MELCloudDevice extends IPSModule
 
     public function Set(bool $power, int $mode, int $temperature, int $fanSpeed, int $horizontalFanPosition, int $verticalFanPosition)
     {
-        if($power == null) {
+        if($power === null) {
             $power = GetValueBoolean($this->GetIDForIdent("POWER"));
         }
 
-        if($mode == null) {
+        if($mode === null) {
             $mode = GetValueInteger($this->GetIDForIdent("MODE"));
         }
 
-        if($temperature == null) {
+        if($temperature === null) {
             $temperature = GetValueInteger($this->GetIDForIdent("SET_TEMPERATURE"));
         }
 
-        if($fanSpeed == null) {
+        if($fanSpeed === null) {
             $fanSpeed = GetValueInteger($this->GetIDForIdent("FAN_SPEED"));
         }
 
-        if($horizontalFanPosition == null) {
+        if($horizontalFanPosition === null) {
             $horizontalFanPosition = GetValueInteger($this->GetIDForIdent("HORIZONTAL_FAN_POSITION"));
         }
 
-        if($verticalFanPosition == null) {
+        if($verticalFanPosition === null) {
             $verticalFanPosition = GetValueInteger($this->GetIDForIdent("VERTICAL_FAN_POSITION"));
         }
 
@@ -353,20 +353,6 @@ class MELCloudDevice extends IPSModule
         $params['SetFanSpeed'] = $fanSpeed;
         $params['VaneHorizontal'] = $horizontalFanPosition;
         $params['VaneVertical'] = $verticalFanPosition;
-
-        $data = array(
-            'DeviceID' => $this->ReadPropertyString('DeviceID'),
-            'Power' => $power,
-            'SetTemperature' => $temperature,
-            'SetFanSpeed' => $fanSpeed,
-            'VaneHorizontal' => $horizontalFanPosition,
-            'VaneVertical' => $verticalFanPosition,
-            'EffectiveFlags' => "287",
-        );
-
-        $json = json_encode($data);
-
-        IPS_LogMessage("SymconMELCloud", "Request: $json");
 
         $response = $this->Request($url, "POST", $params, $headers);
 
