@@ -347,7 +347,7 @@ class MELCloudDevice extends IPSModule
         $params['EffectiveFlags'] = "287";
         $params['HasPendingCommand'] = "true";
 
-        $params['Power'] = $power ? 1 : 0;
+        $params['Power'] = $power ? "true" : "false";
         $params['OperationMode'] = $mode;
         $params['SetTemperature'] = $temperature;
         $params['SetFanSpeed'] = $fanSpeed;
@@ -373,7 +373,7 @@ class MELCloudDevice extends IPSModule
     {
         IPS_LogMessage("SymconMELCloud", json_encode($status));
 
-        if (!$for || $for == "POWER") {
+        if ($for === null || $for == "POWER") {
             $power = $status['Power'];
             SetValueBoolean($this->GetIDForIdent("POWER"), $power);
             IPS_SetHidden($this->GetIDForIdent('MODE'), !$power);
@@ -384,25 +384,25 @@ class MELCloudDevice extends IPSModule
             IPS_SetHidden($this->GetIDForIdent('HORIZONTAL_FAN_POSITION'), !$power);
         }
 
-        if (!$for || $for == "MODE") {
+        if ($for === null || $for == "MODE") {
             SetValueInteger($this->GetIDForIdent("MODE"), $status["OperationMode"]);
         }
 
         SetValueFloat($this->GetIDForIdent("ROOM_TEMPERATURE"), $status['RoomTemperature']);
 
-        if (!$for || $for == "SET_TEMPERATURE") {
+        if ($for === null || $for == "SET_TEMPERATURE") {
             SetValueFloat($this->GetIDForIdent("SET_TEMPERATURE"), $status['SetTemperature']);
         }
 
-        if (!$for || $for == "FAN_SPEED") {
+        if ($for === null || $for == "FAN_SPEED") {
             SetValueInteger($this->GetIDForIdent("FAN_SPEED"), $status['SetFanSpeed']);
         }
 
-        if (!$for || $for == "VERTICAL_FAN_POSITION") {
+        if ($for === null || $for == "VERTICAL_FAN_POSITION") {
             SetValueInteger($this->GetIDForIdent("VERTICAL_FAN_POSITION"), $status['VaneVertical']);
         }
 
-        if (!$for || $for == "HORIZONTAL_FAN_POSITION") {
+        if ($for === null || $for == "HORIZONTAL_FAN_POSITION") {
             SetValueInteger($this->GetIDForIdent("HORIZONTAL_FAN_POSITION"), $status['VaneHorizontal']);
         }
     }
