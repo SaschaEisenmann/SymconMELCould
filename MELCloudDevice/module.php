@@ -305,7 +305,7 @@ class MELCloudDevice extends IPSModule
         }
     }
 
-    public function Set(boolean $power, int $mode, int $temperature, int $fanSpeed, int $horizontalFanPosition, int $verticalFanPosition)
+    public function Set(bool $power, int $mode, int $temperature, int $fanSpeed, int $horizontalFanPosition, int $verticalFanPosition)
     {
         if($power == null) {
             $power = GetValueBoolean($this->GetIDForIdent("POWER"));
