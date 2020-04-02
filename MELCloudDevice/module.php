@@ -354,6 +354,7 @@ class MELCloudDevice extends IPSModule
         $params['VaneHorizontal'] = $horizontalFanPosition;
         $params['VaneVertical'] = $verticalFanPosition;
 
+        IPS_LogMessage("SymconMELCloud", json_encode($params));
         $response = $this->Request($url, "POST", $params, $headers);
 
         if (isset($response["HasPendingCommand"])) {
