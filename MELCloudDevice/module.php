@@ -347,7 +347,7 @@ class MELCloudDevice extends IPSModule
         $params['EffectiveFlags'] = "287";
         $params['HasPendingCommand'] = "true";
 
-        $params['Power'] = $power;
+        $params['Power'] = $power ? 1 : 0;
         $params['OperationMode'] = $mode;
         $params['SetTemperature'] = $temperature;
         $params['SetFanSpeed'] = $fanSpeed;
