@@ -110,7 +110,15 @@ class MELCloudDevice extends IPSModule
 
         $this->RegisterVariableFloat('ROOM_TEMPERATURE', 'RoomTemperature', '~Temperature', 3);
 
-        $this->RegisterVariableFloat('SET_TEMPERATURE', 'SetTemperature', '~Temperature', 4);
+        if (IPS_VariableProfileExists("MCD_Temperature")) {
+            IPS_DeleteVariableProfile("MCD_Temperature");
+        }
+
+        IPS_CreateVariableProfile("MCD_Temperature", 1);
+        IPS_SetVariableProfileValues("MCD_Temperature", 10, 30, 1);
+
+        $this->RegisterVariableFloat('SET_TEMPERATURE', 'SetTemperature', 'MCD_Temperature', 4);
+
         $this->EnableAction("SET_TEMPERATURE");
 
         $this->Update();
