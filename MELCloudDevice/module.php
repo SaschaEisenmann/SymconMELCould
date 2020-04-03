@@ -48,6 +48,7 @@ class MELCloudDevice extends IPSModule
 
         IPS_CreateVariableProfile("MCD_FanSpeed", 1);
         IPS_SetVariableProfileValues("MCD_FanSpeed", 0, 5, 1);
+        IPS_SetVariableProfileIcon("MCD_FanSpeed", "Ventilation");
         IPS_SetVariableProfileAssociation("MCD_FanSpeed", 0, "Auto", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_FanSpeed", 1, "1", "", "-1");
         IPS_SetVariableProfileAssociation("MCD_FanSpeed", 2, "2", "", "-1");
@@ -116,6 +117,8 @@ class MELCloudDevice extends IPSModule
 
         IPS_CreateVariableProfile("MCD_Temperature", 2);
         IPS_SetVariableProfileValues("MCD_Temperature", 10, 30, 1);
+        IPS_SetVariableProfileText("MCD_Temperature", "", "°C");
+        IPS_SetVariableProfileIcon("MCD_Temperature", "Temperature");
 
         $this->RegisterVariableFloat('SET_TEMPERATURE', 'SetTemperature', 'MCD_Temperature', 4);
 
